@@ -29,11 +29,10 @@ searchMovies = (sortParam) => {
     });
 };
 
-const getDetails = (id) => {
+getDetails = (id) => {
   let details_url = fetch(
     `${BASE_URL_DETAILS}/${id}?api_key=${API_KEY}&language=fr-FR`
   );
-
   return details_url
     .then((res) => {
       return res.json();
@@ -42,19 +41,22 @@ const getDetails = (id) => {
       console.log(err);
     });
 };
-console.log(getDetails(724089));
 
-const setBudget = (id) => {
-  console.log(id);
-  getDetails(id).then((data) => {
-    return data.budget;
-  });
-};
+console.log(
+  getDetails(583083).then((res) => {
+    return res;
+  })
+);
 
-console.log(setBudget(724089));
-
+let budgetDetails;
 showMovies = (moviesList) => {
   moviesList.results.slice(0, 10).map((movie) => {
+    let budget = getDetails(movie.id).then((res) => {
+      budgetDetails = res.budget;
+      console.log(budgetDetails);
+      return res.budget;
+    });
+
     let div = document.createElement("div");
     div.className = "movie-card card m-2";
     div.id = "movie-card";
@@ -78,7 +80,7 @@ showMovies = (moviesList) => {
         </li>
         <li class="list-group-item d-flex align-items-center">
             <p class="pr-2 mb-0 font-weight-bold">Budget</p>
-            <p class="mb-0">${movie.id}${setBudget(movie.id)}</p>
+            <p class="mb-0">${budgetDetails}</p>
         </li>
     </ul>`;
 

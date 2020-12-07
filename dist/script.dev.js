@@ -24,7 +24,7 @@ searchMovies = function searchMovies(sortParam) {
   });
 };
 
-var getDetails = function getDetails(id) {
+getDetails = function getDetails(id) {
   var details_url = fetch("".concat(BASE_URL_DETAILS, "/").concat(id, "?api_key=").concat(API_KEY, "&language=fr-FR"));
   return details_url.then(function (res) {
     return res.json();
@@ -33,24 +33,23 @@ var getDetails = function getDetails(id) {
   });
 };
 
-console.log(getDetails(724089));
-
-var setBudget = function setBudget(id) {
-  console.log(id);
-  getDetails(id).then(function (data) {
-    return data.budget;
-  });
-};
-
-console.log(setBudget(724089));
+console.log(getDetails(583083).then(function (res) {
+  return res;
+}));
+var budgetDetails;
 
 showMovies = function showMovies(moviesList) {
   moviesList.results.slice(0, 10).map(function (movie) {
+    var budget = getDetails(movie.id).then(function (res) {
+      budgetDetails = res.budget;
+      console.log(budgetDetails);
+      return res.budget;
+    });
     var div = document.createElement("div");
     div.className = "movie-card card m-2";
     div.id = "movie-card";
     div.style.width = "22em";
-    div.innerHTML = "<img\n        class=\"card-img-top\"\n        src=\"https://image.tmdb.org/t/p/w500/".concat(movie.poster_path, "\"\n        alt=\"\"\n    />\n    <div class=\"card-body\">\n        <h4 class=\"card-title\">").concat(movie.title, "</h4>\n    </div>\n    <ul class=\"list-group list-group-flush\">\n        <li class=\"list-group-item d-flex align-items-center\">\n            <p class=\"pr-2 mb-0 font-weight-bold\">Release date</p>\n            <p class=\"mb-0\">").concat(movie.release_date, "</p>\n        </li>\n        <li class=\"list-group-item d-flex align-items-center\">\n            <p class=\"pr-2 mb-0 font-weight-bold\">Note</p>\n            <p class=\"mb-0\">").concat(movie.vote_average, "</p>\n        </li>\n        <li class=\"list-group-item d-flex align-items-center\">\n            <p class=\"pr-2 mb-0 font-weight-bold\">Budget</p>\n            <p class=\"mb-0\">").concat(movie.id).concat(setBudget(movie.id), "</p>\n        </li>\n    </ul>");
+    div.innerHTML = "<img\n        class=\"card-img-top\"\n        src=\"https://image.tmdb.org/t/p/w500/".concat(movie.poster_path, "\"\n        alt=\"\"\n    />\n    <div class=\"card-body\">\n        <h4 class=\"card-title\">").concat(movie.title, "</h4>\n    </div>\n    <ul class=\"list-group list-group-flush\">\n        <li class=\"list-group-item d-flex align-items-center\">\n            <p class=\"pr-2 mb-0 font-weight-bold\">Release date</p>\n            <p class=\"mb-0\">").concat(movie.release_date, "</p>\n        </li>\n        <li class=\"list-group-item d-flex align-items-center\">\n            <p class=\"pr-2 mb-0 font-weight-bold\">Note</p>\n            <p class=\"mb-0\">").concat(movie.vote_average, "</p>\n        </li>\n        <li class=\"list-group-item d-flex align-items-center\">\n            <p class=\"pr-2 mb-0 font-weight-bold\">Budget</p>\n            <p class=\"mb-0\">").concat(budgetDetails, "</p>\n        </li>\n    </ul>");
     document.getElementById("movie-list").appendChild(div);
   });
 };
