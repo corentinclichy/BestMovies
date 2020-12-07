@@ -1,5 +1,4 @@
 /// API INFORMATION
-
 const API_KEY = "7075fe0e90af85d27887ececc303ff63";
 const BASE_URL_DISCOVER = "https://api.themoviedb.org/3/discover/movie";
 const BASE_URL_DETAILS = "https://api.themoviedb.org/3/movie";
@@ -15,11 +14,9 @@ getMovies = (sortParam) => {
       console.log(err);
     });
 };
-
 searchMovies = (sortParam) => {
   let clearList = document.getElementById("movie-list");
   clearList.innerHTML = "";
-
   getMovies(sortParam)
     .then((movies) => {
       showMovies(movies);
@@ -28,7 +25,6 @@ searchMovies = (sortParam) => {
       console.log(err);
     });
 };
-
 getDetails = (id) => {
   let details_url = fetch(
     `${BASE_URL_DETAILS}/${id}?api_key=${API_KEY}&language=fr-FR`
@@ -41,27 +37,20 @@ getDetails = (id) => {
       console.log(err);
     });
 };
-
-console.log(
-  getDetails(583083).then((res) => {
-    return res;
-  })
-);
-
-let budgetDetails;
+// console.log(
+//   getDetails(583083).then((res) => {
+//     return res;
+//   })
+// );
+budgetDetails = "";
 showMovies = (moviesList) => {
-  moviesList.results.slice(0, 10).map((movie) => {
-    let budget = getDetails(movie.id).then((res) => {
-      budgetDetails = res.budget;
-      console.log(budgetDetails);
-      return res.budget;
-    });
-
-    let div = document.createElement("div");
-    div.className = "movie-card card m-2";
-    div.id = "movie-card";
-    div.style.width = "22em";
-    div.innerHTML = `<img
+  moviesList.results.slice(0, 10).forEach((movie) => {
+    getDetails(movie.id).then((res) => {
+      let div = document.createElement("div");
+      div.className = "movie-card card m-2";
+      div.id = "movie-card";
+      div.style.width = "22em";
+      div.innerHTML = `<img
         class="card-img-top"
         src="https://image.tmdb.org/t/p/w500/${movie.poster_path}"
         alt=""
@@ -80,10 +69,12 @@ showMovies = (moviesList) => {
         </li>
         <li class="list-group-item d-flex align-items-center">
             <p class="pr-2 mb-0 font-weight-bold">Budget</p>
-            <p class="mb-0">${budgetDetails}</p>
+            <p class="mb-0">${res.budget}</p>
         </li>
     </ul>`;
-
-    document.getElementById("movie-list").appendChild(div);
+      document.getElementById("movie-list").appendChild(div);
+      // console.log(budgetDetails);
+      // return res.budget;
+    });
   });
 };
