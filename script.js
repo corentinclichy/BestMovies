@@ -2,6 +2,7 @@
 const API_KEY = "7075fe0e90af85d27887ececc303ff63";
 const BASE_URL_DISCOVER = "https://api.themoviedb.org/3/discover/movie";
 const BASE_URL_DETAILS = "https://api.themoviedb.org/3/movie";
+
 getMovies = (sortParam) => {
   let topMovies = fetch(
     `${BASE_URL_DISCOVER}?api_key=${API_KEY}&language=fr-FR&sort_by=${sortParam}&include_adult=true&include_video=false&primary_release_year=2020&vote_count.gte=1000`
@@ -37,15 +38,23 @@ getDetails = (id) => {
       console.log(err);
     });
 };
-// console.log(
-//   getDetails(583083).then((res) => {
-//     return res;
-//   })
-// );
+
+getMargin = (id) => {
+  getDetail(id).then((res) => {
+    let margin = res.revenue - res.budget;
+
+    return margin;
+  });
+};
+
 budgetDetails = "";
 showMovies = (moviesList) => {
   moviesList.results.slice(0, 10).forEach((movie) => {
     getDetails(movie.id).then((res) => {
+      let margin = res.revenue - res.budget;
+      console.log(res.title);
+      console.log(res.revenue);
+      console.log(res.budget);
       let div = document.createElement("div");
       div.className = "movie-card card m-2";
       div.id = "movie-card";
@@ -67,9 +76,10 @@ showMovies = (moviesList) => {
             <p class="pr-2 mb-0 font-weight-bold">Note</p>
             <p class="mb-0">${movie.vote_average}</p>
         </li>
+        
         <li class="list-group-item d-flex align-items-center">
-            <p class="pr-2 mb-0 font-weight-bold">Budget</p>
-            <p class="mb-0">${res.budget}</p>
+            <p class="pr-2 mb-0 font-weight-bold">Gross margin</p>
+            <p class="mb-0">${margin === 0 ? "" : margin}</p>
         </li>
     </ul>`;
       document.getElementById("movie-list").appendChild(div);
